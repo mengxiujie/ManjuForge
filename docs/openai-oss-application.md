@@ -1,10 +1,10 @@
 # OpenAI OSS 申请文案（最终版）
 
 ## Project Name
-AI Drama Storyboard Skill - Full-Chain Script & Storyboard Generation
+ManjuForge - AI Manju Script & Storyboard Forge
 
 ## Project Repository
-(Fill in your GitHub public repository URL here)
+https://github.com/mengxiuj/ManjuForge
 
 ## Project Introduction & Open Source Value
 

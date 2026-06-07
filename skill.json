@@ -1,19 +1,19 @@
 {
-  "name": "ai-drama-storyboard-skill",
-  "display_name": "AI漫剧剧本+分镜全链路生成",
+  "name": "ManjuForge",
+  "display_name": "ManjuForge - 漫剧锻造",
   "version": "1.0.0",
   "description": "一句话/小说片段/长文本 → 完整商用漫剧剧本+专业分镜脚本。支持横屏16:9标准版和竖屏9:16 AI执行版，内置13个拉片案例、6大风格模板、声音四层设计、AI提示词规范，可直接对接绘图、配音、剪辑全流程出片。",
-  "author": "Open Source Developer",
+  "author": "mengxiuj",
   "license": "MIT-0",
   "tags": [
-    "漫剧",
-    "剧本生成",
-    "分镜脚本",
-    "短视频",
-    "AI创作",
-    "竖屏分镜",
-    "结构化输出",
-    "动漫分镜"
+    "manju",
+    "script-generation",
+    "storyboard",
+    "short-video",
+    "ai-creation",
+    "vertical-storyboard",
+    "structured-output",
+    "anime-storyboard"
   ],
   "platform_compatible": [
     "Hermes",

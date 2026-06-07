@@ -1,6 +1,6 @@
-# AI Drama Storyboard Skill
+# ManjuForge
 
-⭐ **全网首个剧本+分镜全链路生成的专业级AI Skill**
+⭐ **漫剧锻造 - 全网首个剧本+分镜全链路生成的专业级AI Skill**
 
 ✅ 开源免费 | ✅ 全平台适配 | ✅ 双模式输出 | ✅ 13个拉片案例 | ✅ 短视频流量优化
 
@@ -105,7 +105,7 @@ AI Drama Storyboard Skill 是一款面向短视频漫剧工业化量产的专业
 ## 📁 项目结构
 
 ```
-ai-drama-storyboard-skill/
+ManjuForge/
 ├── skill.json                          # 全平台通用技能配置文件
 ├── prompt.core.txt                     # 核心生成逻辑（剧本+分镜）
 ├── style-templates/                    # 六大漫剧风格模板库
