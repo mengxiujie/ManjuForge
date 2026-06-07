@@ -3,8 +3,8 @@
 ## 1. 仓库克隆
 
 ```bash
-git clone https://github.com/xxx/ai-drama-storyboard-skill.git
-cd ai-drama-storyboard-skill
+git clone https://github.com/mengxiuj/ManjuForge.git
+cd ManjuForge
 ```
 
 ## 2. 平台部署
