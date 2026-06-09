@@ -1,10 +1,11 @@
 {
   "name": "ManjuForge",
-  "display_name": "ManjuForge - 漫剧锻造",
+  "display_name": "ManjuForge - 漫剧铸造",
   "version": "1.0.0",
-  "description": "一句话/小说片段/长文本 → 完整商用漫剧剧本+专业分镜脚本。支持横屏16:9标准版和竖屏9:16 AI执行版，内置13个拉片案例、6大风格模板、声音四层设计、AI提示词规范，可直接对接绘图、配音、剪辑全流程出片。",
+  "description": "AI漫剧连载创作引擎。输入题材/人设，输出完整商用漫剧剧本+竖屏分镜+配音文案+AI提示词。支持跨集连载记忆（角色档案+剧情摘要持久化），解决长篇连载人设崩坏问题。内置13个拉片案例、6大风格模板、竖屏9:16 AI执行版分镜。",
   "author": "mengxiuj",
   "license": "MIT-0",
+  "platform": "Hermes Agent",
   "tags": [
     "manju",
     "script-generation",
@@ -12,45 +13,9 @@
     "short-video",
     "ai-creation",
     "vertical-storyboard",
-    "structured-output",
+    "serialization-memory",
     "anime-storyboard"
   ],
-  "platform_compatible": [
-    "Hermes",
-    "OpenClaw",
-    "SiliconFlow",
-    "Cursor"
-  ],
-  "max_tokens": 8192,
-  "temperature": 0.7,
-  "capabilities": [
-    "智能剧情拆解",
-    "自动人设生成",
-    "结构化剧本输出",
-    "短视频爆点优化",
-    "分镜绘图提示词生成",
-    "AI配音文案适配",
-    "多风格模板切换",
-    "批量剧集续更",
-    "竖屏AI执行版分镜",
-    "声音四层设计",
-    "AI挑战镜头标注",
-    "13个拉片案例参考"
-  ],
-  "modes": {
-    "horizontal": {
-      "name": "横屏标准版",
-      "aspect_ratio": "16:9",
-      "target": "human_crew",
-      "fields": ["镜号", "场景", "景别", "运镜", "时长", "画面描述", "台词/音效", "情绪", "色调"]
-    },
-    "vertical": {
-      "name": "竖屏AI执行版",
-      "aspect_ratio": "9:16",
-      "target": "ai_generator",
-      "fields": ["碎片编号", "段落", "时间轴", "景别/运镜", "画面描述", "声音设计", "AI提示词/优先级"]
-    }
-  },
   "style_templates": [
     "甜宠",
     "虐恋",
@@ -61,8 +26,20 @@
   ],
   "knowledge_base": {
     "case_studies": 13,
-    "professional_tools": 4,
-    "vertical_specialized": 3,
-    "end_to_end_examples": 1
+    "vertical_spec": true,
+    "sound_design": true,
+    "ai_execution_fields": true
+  },
+  "modes": {
+    "vertical": {
+      "name": "竖屏AI执行版",
+      "aspect_ratio": "9:16",
+      "fields": ["碎片编号", "时间轴", "景别/运镜", "画面描述", "声音四层", "AI提示词/优先级"]
+    },
+    "horizontal": {
+      "name": "横屏标准版",
+      "aspect_ratio": "16:9",
+      "fields": ["镜号", "场景", "景别", "运镜", "时长", "画面描述", "台词/音效", "情绪", "色调"]
+    }
   }
 }
