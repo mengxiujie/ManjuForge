@@ -5,6 +5,23 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-07-02
+
+### Added
+
+- **Hook Formula Library** (`references/hook_formula_library.md`): 6 opening hook types (Conflict, Suspense, Emotional, Visual Hammer, Question, World-Building) + 4 ending cliffhanger types + platform-specific adaptation guide + practical checklists. Each hook type includes formulas, templates, examples, and high-frequency pitfalls.
+
+- **Psychological Triggers System** (`references/psychological_triggers.md`): Information gap theory, emotional resonance mechanisms, cognitive load management, and addiction loop design for short-form drama retention. Includes per-episode psychological rhythm templates (Ep1-3/4-6/7-10/11-15 with different strategies).
+
+- **Quality Checklist Integration**: Hook type verification and psychological trigger checks now integrated into the per-episode quality self-check workflow.
+
+- **Competitive Analysis Notes** (`references/competitive_analysis_notes.md`): Comparative study against similar AI script generation tools, with actionable improvement directions.
+
+### Changed
+
+- **SKILL.md**: Creation workflow now requires explicit Hook type selection and psychological trigger design before generation.
+- **README.md**: Updated to highlight new Hook Formula and Psychological Trigger capabilities.
+
 ## [1.0.0] - 2026-06-10
 
 ### Added

@@ -81,10 +81,22 @@ Narrative Engine:    A+
 - 统一风格锚点 + Character ID 跨集锁定
 
 ### 专业知识库
-内置 13 个拉片案例 + 6 大风格模板：
+内置 17 个专业参考文件 + 13 个拉片案例 + 6 大风格模板：
 - 盗梦空间/黑客帝国/千与千寻/你的名字/鬼灭之刃/进击的巨人
 - 万神殿/中国奇谭/哪吒2/镖人/雾山五行
 - 竖屏运镜字典、声音设计分层规范、AI执行字段规范
+
+### Hook 公式库 ★新增
+6种开篇Hook类型 + 4种结尾截断 + 平台差异适配 + 实战检查清单：
+- 冲突型/悬念型/情绪型/视觉锤型/提问型/世界建立型
+- 每种Hook附模板、公式、示例、高频踩坑点
+- 每集自动匹配最合适的Hook类型
+
+### 心理触发点体系 ★新增
+基于信息缺口、情感共鸣、认知负荷管理的留人机制：
+- 上瘾循环设计（触发→行动→奖励→投入）
+- 分集心理节奏模板（第1-3集/4-6集/7-10集/11-15集各有侧重）
+- 常见心理触发失效诊断与修复指南
 
 ### 质量自检体系
 六维度评估（剧本/分镜/配音/AI提示词/记忆机制/抖音适配），每集自检 + 每3集跨集评估。
@@ -124,9 +136,11 @@ ManjuForge/
 │   ├── character_template.md         # 角色档案模板
 │   ├── worldbuilding_template.md     # 世界观模板
 │   └── plot_summary.md               # 剧情摘要模板
-├── references/                       # 专业参考资料
+├── references/                       # 专业参考资料（17个文件）
 │   ├── evaluation_framework.md       # 六维度评估体系
 │   ├── style_guide.md                # 六大风格详细指南
+│   ├── hook_formula_library.md       # ★六型Hook公式库
+│   ├── psychological_triggers.md     # ★心理触发点手册
 │   ├── state_snapshot_guide.md       # State Snapshot 状态追踪方法
 │   ├── strategy_and_positioning.md   # 定位与推广策略
 │   ├── third_party_evaluation.md     # 第三方评估总结
