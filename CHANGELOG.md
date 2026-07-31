@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **SKILL.md restructured**: 804 lines → 586 lines (-27%). Removed duplicated sections (batch mode ×2, pitfall records ×3, knowledge base index ×2, demo iteration workflow ×2, production workflow overlap ×3). Chapter numbering normalized (一~八, no jumps/duplicates). All pitfall records merged into one 24-item verified pitfall table.
 - **References deduplicated**: removed `storyboard-skill.md` (stale anime-storyboard-artist copy, already internalized into knowledge_base/) and `pitfalls_log.md` (content merged into SKILL.md pitfall table). 18 → 16 reference files.
+- **Iteration documentation**: added `references/optimization-log-v1.2.md` (reusable refactoring methodology + script development patterns + git merge lessons for future versions) and `references/competitive_shanyin_survey.md` (competitor survey archive: Shanyin Screenwriter 2.0 on SekoAI — closed-source, platform-exclusive, limited reference value). 16 → 18 reference files.
 
 ## [1.1.0] - 2026-07-02
 

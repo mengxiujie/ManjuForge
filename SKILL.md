@@ -567,6 +567,8 @@ description: 漫剧铸造 - AI漫剧连载创作引擎。输入题材/人设，�
 | `references/douyin_platform_rules.md` | 抖音平台规则 |
 | `references/demo_case_study.md` | Demo案例分析 |
 | `references/knowledge_base/` | 13个拉片案例+竖屏规范+声音设计+AI执行字段 |
+| `references/optimization-log-v1.2.md` | v1.2.0优化日志（结构重构方法+自检脚本验证模式+git合并经验，下次优化先读） |
+| `references/competitive_shanyin_survey.md` | 竞品调研存档：山音编剧导演大师2.0（SekoAI，结论：不开源，参考价值有限） |
 
 ### 与 anime-storyboard-artist 的关系
 
