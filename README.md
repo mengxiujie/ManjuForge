@@ -81,10 +81,17 @@ Narrative Engine:    A+
 - 统一风格锚点 + Character ID 跨集锁定
 
 ### 专业知识库
-内置 17 个专业参考文件 + 13 个拉片案例 + 6 大风格模板：
+内置 16 个专业参考文件 + 13 个拉片案例 + 6 大风格模板：
 - 盗梦空间/黑客帝国/千与千寻/你的名字/鬼灭之刃/进击的巨人
 - 万神殿/中国奇谭/哪吒2/镖人/雾山五行
 - 竖屏运镜字典、声音设计分层规范、AI执行字段规范
+
+### 自动质量自检 ★v1.2 新增
+一行命令跑完 14 项质量检查（开篇画面/标题欺诈/风格锚点/Character ID/碎片时长/声音匹配/视觉锤/反派台词/引导/字幕卡/负向提示词/标题格式/场景标记/跨时段过渡）：
+```bash
+python scripts/quality_check.py demo/第1集_完整版.md --villain 赵天赐
+```
+输出 🔴🟡🟢 分级判定，存在🔴自动拦截进入下一集。已在全部 6 集 Demo 验证。
 
 ### Hook 公式库 ★新增
 6种开篇Hook类型 + 4种结尾截断 + 平台差异适配 + 实战检查清单：
@@ -131,7 +138,10 @@ git clone https://github.com/mengxiujie/ManjuForge.git ~/.hermes/skills/creative
 ManjuForge/
 ├── SKILL.md                          # 核心 Skill 定义
 ├── skill.json                        # 配置文件
+├── prompt.core.txt                   # 核心引擎规则（开源稳定版）
 ├── LICENSE                           # MIT-0
+├── scripts/                          # ★v1.2 工具
+│   └── quality_check.py              # 14项自动质量自检（一行命令）
 ├── templates/                        # 记忆模板
 │   ├── character_template.md         # 角色档案模板
 │   ├── worldbuilding_template.md     # 世界观模板

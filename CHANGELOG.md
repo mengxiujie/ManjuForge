@@ -5,6 +5,18 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-07-31
+
+### Added
+
+- **Automatic Quality Check Tool** (`scripts/quality_check.py`): One-command 14-item auto inspection (opening frame / title honesty / style anchor / Character ID / fragment duration / sound-time match / visual hammer / villain lines / follow-up guide / subtitle card / negative prompt / title format / scene marker / time transition). Parses real episode files, outputs 🔴🟡🟢 verdict, exits 1 when 🔴 items exist. Verified against all 6 demo episodes — automatically caught the real issue documented in pitfalls (Ep4-6 fragment duration creeping up to 7.6-7.8s).
+- **prompt.core.txt upgraded to v1.2**: Added serial memory mechanism (character dossier / worldbuilding / plot summary constraints injection + summary update template), Hook formula library (6 opening types + 4 ending cliffhangers), psychological rhythm design, style anchor / Character ID / negative prompt rules, unified fragment duration (3-7s average, matching SKILL.md), title spec, subtitle card, ending guide rules, and 8 long-series pacing rules. Fixed the fragment duration contradiction between prompt.core (10-15s) and SKILL.md (3-7s).
+
+### Changed
+
+- **SKILL.md restructured**: 804 lines → 586 lines (-27%). Removed duplicated sections (batch mode ×2, pitfall records ×3, knowledge base index ×2, demo iteration workflow ×2, production workflow overlap ×3). Chapter numbering normalized (一~八, no jumps/duplicates). All pitfall records merged into one 24-item verified pitfall table.
+- **References deduplicated**: removed `storyboard-skill.md` (stale anime-storyboard-artist copy, already internalized into knowledge_base/) and `pitfalls_log.md` (content merged into SKILL.md pitfall table). 18 → 16 reference files.
+
 ## [1.1.0] - 2026-07-02
 
 ### Added
