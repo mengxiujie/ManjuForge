@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Version-v1.1.0-brightgreen" alt="Version">
   <img src="https://img.shields.io/badge/License-MIT--0-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Hermes%20Agent-blue" alt="Platform">
   <img src="https://img.shields.io/badge/Episodes--Tested-6-red" alt="Episodes">
@@ -105,7 +106,21 @@ python scripts/quality_check.py demo/第1集_完整版.md --villain 赵天赐
 - 分集心理节奏模板（第1-3集/4-6集/7-10集/11-15集各有侧重）
 - 常见心理触发失效诊断与修复指南
 
-### 质量自检体系
+### 自动自检体系 🔄 **v1.1.0新增**
+
+创作完成后立即自动执行14项质量检查（含通过/不通过判定标准）：
+- 🔴 项自动标记"未通过"，修复后才能进入下一集
+- 修复后自动重检确认闭环
+- 覆盖：开篇画面/标题兑现/风格锚点/Character ID/碎片时长/声音设计/空间布局等
+
+### Blocking空间布局 🎬 **v1.1.0新增**
+
+每个关键场景生成文本俯视图（类似电影走位图）：
+- 初始化时创建 `场景布局.md`，跨集持久化
+- 标注角色位置、核心道具锚点、出入口
+- 分镜时空间关系有据可查，杜绝跳位
+
+### 六维度评估体系
 六维度评估（剧本/分镜/配音/AI提示词/记忆机制/抖音适配），每集自检 + 每3集跨集评估。
 
 ---
