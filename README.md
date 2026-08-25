@@ -197,7 +197,7 @@ ManjuForge/
 │   ├── character_template.md         # 角色档案模板
 │   ├── worldbuilding_template.md     # 世界观模板
 │   └── plot_summary.md               # 剧情摘要模板
-├── references/                       # 专业参考资料（26个专题文件 + knowledge_base 拉片库22个案例文件）
+├── references/                       # 专业参考资料（30个专题文件，以目录实际为准 + knowledge_base 拉片库13个案例文件）
 │   ├── evaluation_framework.md       # 六维度评估体系
 │   ├── style_guide.md                # 六大风格详细指南
 │   ├── hook_formula_library.md       # ★六型Hook公式库

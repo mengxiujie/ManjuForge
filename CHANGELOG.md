@@ -5,6 +5,17 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.3] - 2026-08-25
+
+### Fixed
+
+- **prompt.core.txt 内外版本分裂修复**（P0，v1.2 识别的最严重问题复发）：核心引擎从 v1.6.0 同步至 v1.7.2 全能力——三平台参数化（抖音竖屏/优酷横屏 landscape/红果）、横屏 AI 执行版、场景布局光照状态字段（TIME-OF-DAY）、剧情摘要主线推进字段、Direct it 语序范式（4.3）、介质锚 vs 情绪锚决策（4.4.1）、自检表碎片时长双标准、知识库引用补山海专项
+- **README references 计数修正**（P1）：26→30 个专题文件，表述改为"以目录实际为准"防再次漂移；拉片库口径修正为 13 个案例文件
+
+### Added
+
+- **模型适配建议**（P2，补齐评估缺口）：SKILL.md 新增强/中/弱模型分工表（强模型跑创作判断/弱模型做批量转换）、创作类更新必须强模型复核、成本策略
+
 ## [1.7.2] - 2026-08-25
 
 ### Added
