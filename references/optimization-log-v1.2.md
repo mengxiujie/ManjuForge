@@ -180,3 +180,21 @@
 
 - prompt.core 同步滞后是**反复出现**的问题（v1.2 修过、v1.7.3 又修）——根因是"版本号随手改、内容没跟上"。治本方案：每次发版把"prompt.core 是否同步"列入发布检查清单
 - README 计数同理——表述改为"以目录实际为准"从源头消除数字漂移
+
+---
+
+# 生产工作台 skill 版本化（2026-08-25 追加）
+
+> 评估遗留最后一项落地：ai-sample-pipeline / anime-storyboard-artist / character-asset-manager / data-feedback-loop 从"快照同步制"升级为版本管理制。
+
+## 做了什么
+
+- 4 个 skill 各自新建 `skill.json`（v1.0.0 起步，author mengxiuj，license MIT-0，记录 created/versioned 时间）与 `CHANGELOG.md`（Keep a Changelog 格式，v1.0.0 记录能力基线+同步说明）
+- 快照（05_生产Skill）↔ 运行态（~/.workbuddy/skills）双向对齐验证零差异
+- v1.0.0 的 CHANGELOG 各自回顾了创建以来的完整能力基线（ai-sample-pipeline 五阶段流水线/I2V规则；anime-storyboard-artist 双模式+横屏AI执行版；character-asset-manager 四层保障+锁定串；data-feedback-loop 指标字典+诊断树）
+
+## 后续惯例（写入各 CHANGELOG 同步说明）
+
+- 改动后 skill.json 版本号+1，CHANGELOG 记一条，再同步快照↔运行态
+- 语义化版本：fix=patch(+0.0.1)、新能力=minor(+0.1.0)、破坏性重构=major(+1.0.0)
+- 与 manjuforge 的差异：这 4 个 skill 无 git 仓库（纯本地生产工具），版本管理以 CHANGELOG 为记录载体；若未来开源再并入 git
