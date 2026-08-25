@@ -5,6 +5,16 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-08-25
+
+### Added
+
+- **剧情摘要"主线推进"字段**（第三方评估遗留项落地）：
+  - `templates/plot_summary.md` 全剧主线脉络升级为双主线表（主线A=外部冲突线 / 主线B=内心关系线，各带当前进度% + 下一节点）
+  - 每集块新增"主线推进"记录字段（主线A/B 各自推进了什么、进度%变化）
+  - `SKILL.md` 剧情摘要更新模板同步加字段；记忆连贯性自检清单新增 🔴 规则"第4集起必须激活主线B"（单主线到第8集会疲劳）
+- **优化日志 v1.7.0 节**（`references/optimization-log-v1.2.md`）：三条候选点核查结论存档——主线B字段已落地 / 10集压力测试已由《渊烬》E1-10 真实完成（第二单元 7×A+，无记忆衰减）/ Hell-Grind 三点已全部落地；并登记横屏剧情型短剧适配为 v1.7 主菜（待方向确认）
+
 ## [1.6.0] - 2026-08-07
 
 ### Added
