@@ -130,3 +130,36 @@
 - SKILL.md 内部"13个拉片案例"（description/卖点/关系节）与"16个拉片案例"（知识库清单）口径不一致——05 生产版即如此，本轮忠实保留；后续可统一为"13案例文件+3横屏史诗参考"
 - knowledge_base/case_study 实际仍为13个文件，深海/灵笼/大鱼海棠以参考形式存在于 ai_execution_fields.md/ep01_full_example.md——"16个"是含参考的口径
 - 05 工作台其余4个 skill（ai-sample-pipeline 等）与 manjuforge 无版本耦合，未纳入本次合并
+
+---
+
+# ManjuForge v1.7.2 优化记录（2026-08-25）—— 存档项解冻
+
+> 用户要求全面检查"创作过程中借鉴学习、当时说暂时不需要、等需要再配置的技能"。核查发现：当年存档的前提（"AI视频暂停战略"）已反转——《山海》进入14集平台版正式生产，EP1-5 样片预演验证进行中。3 项存档解冻，4 项维持存档。
+
+## 一、检查范围与依据
+
+- 存档项来源：4 份竞品调研（DramaClaw/Hell-Grind/Seedance/山音）+ 战略决策记录
+- 生产现状对照：`D:\社区志\未叙文化\山海 剧集筹备\08_十四集平台版_v1.0\`（EP1-5 v1.0 完成，批次1连续性总检通过；EP1-5 样片预演验证：55秒声音/60秒选择性失声/90秒连续动作表/blocking）
+- 运行态 skill：`C:\Users\47666\.workbuddy\skills\`（8个，5个生产 + 3个无关）
+
+## 二、解冻落地（3项）
+
+| 优先级 | 存档项 | 落点 | 内容 |
+|:---:|--------|------|------|
+| 🔴 P0 | DramaClaw I2V 运动描述规则（§3.5，前提"若未来战略放开AI视频"已成立） | `ai-sample-pipeline/references/prompt-adaptation.md` 第六节 | 首帧契约/字数按时长缩放/禁角色名用视觉特征/禁情绪标签用肢体语言/禁静态镜头词/单向运动链/中文现在时4-6句/失败回退默认词 + 《山海》示例 + 连续动作碎片首尾衔接纪律 |
+| 🟡 P1 | Seedance five-verdict"单变量重拍"（存档"留给企业版"，成片层已启动） | `ai-sample-pipeline/references/qa-rework.md` 返工纪律第5条 | 每次重拍只改一个变量（提示词/参考图/种子/参数一次只动一项）；A/B/C/D四级+返工上限2次已覆盖 five-verdict 核心，整体不引入 |
+| 🟡 P2 | DramaClaw 场景布局光照状态字段（TIME-OF-DAY 规则，当年🟡未落地） | `manjuforge/SKILL.md` 场景布局规范 | 每个场景记录 time-of-day/主光源方向色温/特殊光照；锚点图固定光照只许局部调节；跨时段逐时段登记 |
+
+## 三、维持存档（4项，核查后不需要）
+
+- DramaClaw 角色识别锚点（草图颜色映射）——AI 直接生成管线用参考图+Character ID+首帧锚定已覆盖，颜色映射属线稿管线
+- Hell-Grind 参考图8维继承——character-asset-manager 锁定串+参考图权重(0.7/0.75)+首帧锚定+S/A/B/C分级已覆盖，8维开关过重
+- Hell-Grind 10阶段CSV/镜头级追踪——ai-sample-pipeline 状态机已碎片级覆盖且更轻
+- DramaClaw 部署/集成——保持"不部署"，方法论吸收即可
+
+## 四、同步与版本
+
+- ai-sample-pipeline：05_生产Skill 快照 ↔ .workbuddy 运行态 已对齐（2文件）
+- manjuforge：SKILL.md 四方一致（主副本/安装副本/05/运行态）；CHANGELOG v1.7.2；commit 待执行
+- 遗留观察：ai-sample-pipeline 无版本号体系（快照同步制），本轮未引入版本管理——如后续频繁变更可考虑

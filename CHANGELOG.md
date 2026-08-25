@@ -5,6 +5,13 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2026-08-25
+
+### Added
+
+- **场景布局"光照状态"字段**（DramaClaw TIME-OF-DAY 规则落地，存档项解冻）：每个场景记录 `time-of-day`（晨/日/暮/夜）、主光源方向与色温、特殊光照（烛火/冥火/天光）；锚点图固定光照只许局部调节，跨时段场景逐时段登记光照行，防 AI 生成"跨时段场景崩"
+- **ai-sample-pipeline 存档项解冻**（属生产工作台，不在本仓库版本内）：`prompt-adaptation.md` 新增第六节 I2V 运动描述规则（首帧契约/单向运动链/禁静态镜头词/禁情绪标签/字数按时长缩放/失败回退，DramaClaw §3.5 存档解冻）；`qa-rework.md` 返工纪律新增"每次重拍只改一个变量"（Seedance five-verdict 纪律）
+
 ## [1.7.1] - 2026-08-25
 
 ### Added
