@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-ManjuForge 质量自检工具 (v1.2.0)
+ManjuForge 质量自检工具 (v1.6.0)
 ================================
-一行命令跑完 14 项自动检查：开篇画面/标题欺诈/风格锚点/Character ID/
+一行命令跑完 18 项自动检查：开篇画面/标题欺诈/风格锚点/Character ID/
 碎片时长/声音匹配/视觉锤/反派台词/关注引导/字幕卡/负向提示词/标题格式/
-场景标记/跨时段过渡。
+场景标记/跨时段过渡/参考图绑定/伏笔表健康/故事圣经健康/角色关系图健康。
 
 用法:
     python scripts/quality_check.py <第X集_完整版.md> [--villain 反派名] [--json]
@@ -129,14 +129,44 @@ def check_title_honesty(text: str, title: str, body: str) -> tuple[str, str]:
     return "🟢", f"标题关键词覆盖度 {ratio:.0%}"
 
 
-def check_style_anchor(frags: list[dict]) -> tuple[str, str]:
-    """3. 风格锚点完整：所有提示词含统一 Style Anchor 前缀。"""
+def parse_style_anchor(text: str) -> str:
+    """解析分镜表上方的统一风格锚点声明（`风格锚点（所有提示词统一前缀）：` 后代码块）。"""
+    m = re.search(r"风格锚点（所有提示词统一前缀）：\s*\n\s*>\s*`([^`]+)`", text)
+    return m.group(1).strip() if m else ""
+
+
+# Style Anchor 禁词：锚点只允许渲染介质+视觉完成度，内容词会污染所有镜头
+# （covert content injection，见 knowledge_base/ai_execution_fields.md 4.4）
+STYLE_ANCHOR_BANNED = [
+    "drama", "romance", "melodrama", "thriller", "fantasy", "mythology",
+    "historical", "ancient", "period", "dynasty", "campus", "palace",
+    "hanfu", "school uniform", "modern elements",
+    "古装", "民国", "校园", "宫廷", "玄幻", "古风", "甜宠", "虐恋", "悬疑",
+]
+
+
+def check_style_anchor(frags: list[dict], text: str = "") -> tuple[str, str]:
+    """3. 风格锚点完整：所有提示词含统一 Style Anchor 前缀；锚点声明须 medium/grade-only。"""
     if not frags:
         return "🟡", "未解析到碎片表，跳过风格锚点检查"
     missing = [f["id"] for f in frags if "风格锚点" not in f["prompt"] and "style anchor" not in f["prompt"].lower()]
     if missing:
         return "🔴", f"以下碎片缺风格锚点前缀：{missing[:5]}{'…' if len(missing) > 5 else ''}（无锚点=跨镜头画风崩）"
-    return "🟢", f"全部 {len(frags)} 个碎片含统一风格锚点"
+    if not text:
+        return "🟢", f"全部 {len(frags)} 个碎片含统一风格锚点标记"
+    anchor = parse_style_anchor(text)
+    if not anchor:
+        return "🟡", "碎片含[风格锚点]标记但未找到统一前缀声明（建议在分镜表上方声明：> 风格锚点（所有提示词统一前缀）：> `...`）"
+    banned_hits = []
+    for w in STYLE_ANCHOR_BANNED:
+        if re.search(r"[a-zA-Z]", w):
+            if re.search(rf"\b{re.escape(w)}\b", anchor, re.IGNORECASE):
+                banned_hits.append(w)
+        elif w in anchor:
+            banned_hits.append(w)
+    if banned_hits:
+        return "🔴", f"锚点含内容词：{banned_hits}。Style Anchor 必须只描述渲染介质+完成度，题材/时代/地点/服装/情绪词会注入每个碎片污染内容（如闪回现代被压制）。改为 medium-only 锚点，见 knowledge_base/ai_execution_fields.md 4.4"
+    return "🟢", f"全部 {len(frags)} 个碎片含统一风格锚点，锚点内容符合 medium/grade-only"
 
 
 def check_character_id(text: str, frags: list[dict]) -> tuple[str, str]:
@@ -166,24 +196,50 @@ def check_fragment_duration(frags: list[dict]) -> tuple[str, str]:
     return "🟢", f"碎片时长合格：平均{avg:.1f}秒（{len(frags)}个碎片）"
 
 
+def _script_zone(text: str) -> str:
+    """提取剧本部分（## 剧本 与 ## 竖屏 之间）。分镜表的声音字段（🎵🔊💓🫧）不参与昼夜检测。"""
+    if "## 剧本" in text:
+        tail = text.split("## 剧本", 1)[-1]
+    elif "## 竖屏" in text:
+        return text.split("## 竖屏", 1)[0]  # 无剧本标记但有序幕区
+    else:
+        return text
+    if "## 竖屏" in tail:
+        return tail.split("## 竖屏", 1)[0]
+    return tail
+
+
+def _scene_segments(script: str) -> list[str]:
+    """按场景标记切分剧本：'**场景：...**' 或 '### 【段标题' 为段边界。"""
+    parts = re.split(r"\n(?=\*\*场景：|\n### 【)", script)
+    return [p for p in parts if p.strip()]
+
+
 def check_sound_time_match(text: str) -> tuple[str, str]:
-    """6. 声音设计与场景时间匹配（按行级检测，避免跨场景误报）。"""
+    """6. 声音设计与场景时间匹配（仅剧本区·按场景段检测，避免跨场景误报）。"""
     hard_issues, soft_issues = [], []
     day_kw = ("清晨", "早晨", "晨光", "天亮", "破晓")
     night_kw = ("深夜", "夜晚", "夜半", "子时", "夜·", "夜，")
     candle_kw = ("烛火", "蜡烛", "灯芯", "油灯")
     bird_kw = ("鸟鸣", "鸡鸣")
-    for line in text.splitlines():
+    script = _script_zone(text)
+    # 行级检测（硬冲突）：同一行内昼夜矛盾
+    for line in script.splitlines():
         if any(k in line for k in day_kw) and any(k in line for k in candle_kw):
             hard_issues.append(f"L{text.count(chr(10), 0, text.find(line)) + 1}: 清晨场景出现烛火（清晨=鸟鸣+晨光）")
         if any(k in line for k in night_kw) and any(k in line for k in bird_kw):
             hard_issues.append(f"L{text.count(chr(10), 0, text.find(line)) + 1}: 夜晚场景出现鸟鸣/鸡鸣（夜晚=烛火+虫鸣）")
-    # 全文级跨行组合：只提示人工确认，不判死
+    # 场景段级检测（软提示）：同一场景段内昼夜关键词并存（跨场景段共存不算冲突）
     if not hard_issues:
-        if any(k in text for k in day_kw) and any(k in text for k in candle_kw):
-            soft_issues.append("全文同时出现清晨与烛火（可能跨场景，请人工确认）")
-        if any(k in text for k in night_kw) and any(k in text for k in bird_kw):
-            soft_issues.append("全文同时出现夜晚与鸟鸣（可能跨场景，请人工确认）")
+        for i, seg in enumerate(_scene_segments(script)):
+            seg_day = any(k in seg for k in day_kw)
+            seg_candle = any(k in seg for k in candle_kw)
+            seg_night = any(k in seg for k in night_kw)
+            seg_bird = any(k in seg for k in bird_kw)
+            if seg_day and seg_candle:
+                soft_issues.append(f"场景段{i + 1}内同时出现清晨与烛火（确认是否同场景跨时段）")
+            if seg_night and seg_bird:
+                soft_issues.append(f"场景段{i + 1}内同时出现夜晚与鸟鸣（确认是否同场景跨时段）")
     if hard_issues:
         return "🔴", "；".join(hard_issues)
     if soft_issues:
@@ -270,6 +326,191 @@ def check_time_transition(text: str) -> tuple[str, str]:
     return "🟢", "时段单一或有过渡处理"
 
 
+def check_reference_binding(text: str, frags: list[dict]) -> tuple[str, str]:
+    """15. 参考图绑定提醒：角色出场碎片建议绑定角色参考图（🟡 不强制）。"""
+    if not frags:
+        return "🟡", "未解析到碎片表，跳过参考图检查"
+    has_char = any("Character ID" in f["prompt"] for f in frags)
+    if not has_char:
+        return "🟢", "本集无角色出场（或未用Character ID），跳过"
+    if re.search(r"角色参考图|参考图[:：]|Image\s*\d+", text):
+        return "🟢", "已绑定角色参考图（槽位声明或提示词内引用，参考图=最高一致性保障）"
+    return "🟡", "有角色出场但未绑定角色参考图。纯文字 Character ID 一致性天花板低，建议在分镜表上方声明：> 角色参考图：Image 1=角色名（正脸设定图）。见 knowledge_base/ai_execution_fields.md 4.5（暂无参考图可暂用文字锚定）"
+
+
+def _episode_num(s: str) -> int:
+    """从 'E3' / '第3集' / '3' 提取集数。"""
+    if not s:
+        return 0
+    m = re.search(r"E(\d+)|第(\d+)集|^(\d+)$", s)
+    return int(m.group(1) or m.group(2) or m.group(3)) if m else 0
+
+
+def parse_foreshadow_table(text: str) -> list[dict]:
+    """解析伏笔表（Markdown 表格，伏笔ID格式 F0xx）。"""
+    rows = []
+    for line in text.splitlines():
+        if not line.strip().startswith("|") or not re.search(r"\|\s*F\d+", line):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 6:
+            continue
+        rows.append({
+            "id": cells[0],
+            "content": cells[1],
+            "type": cells[2],
+            "plant": cells[3],
+            "importance": cells[4],
+            "status": cells[5],
+            "plan": cells[6] if len(cells) > 6 else "",
+            "collect": cells[7] if len(cells) > 7 else "",
+            "recent": cells[8] if len(cells) > 8 else "",
+            "notes": cells[10] if len(cells) > 10 else "",
+        })
+    return rows
+
+
+def check_foreshadow_table(text: str) -> tuple[str, str]:
+    """16. 伏笔表健康检查（Foreshadow Engine）：ID唯一/状态合法/回收一致/发酵窗口。"""
+    rows = parse_foreshadow_table(text)
+    if not rows:
+        return "🟡", "未解析到伏笔表条目（需 --foreshadow 指定伏笔表路径，ID格式 F0xx）"
+    reds, yellows = [], []
+    ids = [r["id"] for r in rows]
+    dup = sorted({i for i in ids if ids.count(i) > 1})
+    if dup:
+        reds.append(f"重复ID {dup}")
+    for r in rows:
+        st = r["status"]
+        if st not in ("已埋", "活跃", "已回收", "已废弃"):
+            reds.append(f"{r['id']} 状态非法:{st}")
+            continue
+        plant, collect = _episode_num(r["plant"]), _episode_num(r["collect"])
+        if st == "已回收":
+            if not r["collect"]:
+                reds.append(f"{r['id']} 已回收但缺实际回收集")
+            elif collect <= plant:
+                reds.append(f"{r['id']} 回收集({r['collect']})≤埋设集({r['plant']})")
+            elif collect - plant < 2:
+                yellows.append(f"{r['id']} 发酵窗口不足(仅隔{collect-plant}集,应≥2)")
+        elif st == "已废弃" and not r["notes"]:
+            yellows.append(f"{r['id']} 已废弃但无备注理由")
+    if reds:
+        return "🔴", "伏笔表：" + "；".join(reds[:4])
+    if yellows:
+        return "🟡", "伏笔表：" + "；".join(yellows[:4])
+    return "🟢", f"伏笔表健康（{len(rows)}条：ID唯一/状态合法/回收一致）"
+
+
+def check_story_bible(text: str) -> tuple[str, str]:
+    """17. 故事圣经健康（Story Bible）：四段齐全/视觉母题完整/禁止变化非空。"""
+    if not text.strip():
+        return "🟡", "未提供故事圣经（需 --bible 指定路径）"
+    sections = ["世界规则", "角色弧光", "视觉母题", "禁止变化"]
+    missing = [s for s in sections if f"## {s}" not in text and f"## 一、{s}" not in text]
+    if missing:
+        return "🔴", f"故事圣经缺段落：{missing}（四段式：世界规则/角色弧光/视觉母题/禁止变化）"
+    reds, yellows = [], []
+    def _zone(t: str, header: str) -> str:
+        """提取某 ## 段内容，到下一个行首 ##（非 ###）段落为止。"""
+        if header not in t:
+            return ""
+        return re.split(r"\n## (?!#)", t.split(header, 1)[-1], maxsplit=1)[0]
+    # 视觉母题：只在 ## 视觉母题 段内找符号行
+    motif_zone = _zone(text, "## 视觉母题")
+    if "| 符号 |" in motif_zone and "| 类型 |" in motif_zone:
+        motif_rows = [l for l in motif_zone.splitlines() if l.strip().startswith("|") and re.search(r"\|\s*E\d+", l)]
+        if not motif_rows and "无符号" not in motif_zone:
+            reds.append("视觉母题表为空（无符号登记；若本剧无符号系统请注明'本剧无符号'）")
+        else:
+            incomplete = [l.split("|")[1].strip() for l in motif_rows if len([c for c in l.strip().strip("|").split("|")]) < 6]
+            if incomplete:
+                yellows.append(f"母题字段不完整：{incomplete[:3]}")
+    elif "视觉母题" in text:
+        yellows.append("无视觉母题表（建议建立全剧符号系统）")
+    # 禁止变化非空
+    forbid_zone = _zone(text, "## 禁止变化")
+    if forbid_zone.strip() and not any(l.strip().startswith("- ") for l in forbid_zone.splitlines()):
+        yellows.append("禁止变化段为空（世界级+角色级至少各1条）")
+    # 主线脉络：表头含"当前进度" 且 主线A/B 行第3列非空
+    main_zone = _zone(text, "## 主线脉络")
+    if "| 主线 |" in main_zone:
+        if "当前进度" not in main_zone.split("---", 1)[0]:
+            yellows.append("主线脉络缺'当前进度'列")
+        else:
+            empty_progress = [l.split("|")[1].strip() for l in main_zone.splitlines()
+                              if l.strip().startswith("|") and re.search(r"主线[A-Z]", l)
+                              and len([c for c in l.strip().strip("|").split("|")]) > 2
+                              and not [c for c in l.strip().strip("|").split("|")][2].strip()]
+            if empty_progress:
+                yellows.append(f"主线缺当前进度：{empty_progress[:3]}")
+    if reds:
+        return "🔴", "故事圣经：" + "；".join(reds[:3])
+    if yellows:
+        return "🟡", "故事圣经：" + "；".join(yellows[:3])
+    return "🟢", "故事圣经健康（四段齐全+母题完整+禁令已填）"
+
+
+def parse_relation_matrix(text: str) -> tuple[list[str], list[list[str]]]:
+    """解析关系矩阵：返回 (角色列表, 单元格二维表)。只在 ## 关系矩阵 段内解析，跳过表头/分隔行。"""
+    if "## 关系矩阵" in text:
+        text = re.split(r"\n## (?!#)", text.split("## 关系矩阵", 1)[-1], maxsplit=1)[0]
+    header, rows = [], []
+    for line in text.splitlines():
+        if not line.strip().startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        # 跳过 markdown 分隔行（|---|）
+        if cells and all(re.fullmatch(r"-{2,}", c or "-") for c in cells):
+            continue
+        if cells and cells[0] == "角色":
+            header = cells[1:]
+            continue
+        if header and len(cells) == len(header) + 1 and cells[0] not in ("—", "-"):
+            rows.append(cells)
+    return header, rows
+
+
+def check_character_graph(text: str) -> tuple[str, str]:
+    """18. 角色关系图健康（Character Graph）：矩阵对称/事件完整/信任无突变。"""
+    if not text.strip():
+        return "🟡", "未提供角色关系图（需 --graph 指定路径）"
+    reds, yellows = [], []
+    header, rows = parse_relation_matrix(text)
+    if len(header) < 2:
+        yellows.append("关系矩阵角色数<2（单角色矩阵无意义）")
+    else:
+        names = [r[0] for r in rows]
+        for i, name_i in enumerate(names):
+            for j, name_j in enumerate(names):
+                if i == j:
+                    continue
+                a = rows[i][j + 1] if len(rows[i]) > j + 1 else ""
+                b = rows[j][i + 1] if len(rows[j]) > i + 1 else ""
+                if bool(a) != bool(b):
+                    reds.append(f"矩阵不对称：{name_i}→{name_j} 有/无 与反向不一致")
+                    break
+            if reds:
+                break
+    if "关系事件时间线" not in text:
+        yellows.append("无关系事件时间线（关系变化必须有事件记录）")
+    else:
+        events = [l for l in text.splitlines() if l.strip().startswith("|") and re.search(r"\|\s*E\d+", l)]
+        if not events:
+            yellows.append("事件时间线为空（每集至少1对关系推进）")
+        else:
+            for l in events:
+                m = re.search(r"(\d+)→(\d+)", l)
+                if m and int(m.group(2)) - int(m.group(1)) > 20:
+                    reds.append(f"单集信任突变>20：{l.split('|')[1].strip()}")
+                    break
+    if reds:
+        return "🔴", "关系图：" + "；".join(reds[:3])
+    if yellows:
+        return "🟡", "关系图：" + "；".join(yellows[:3])
+    return "🟢", f"关系图健康（{len(header)}角色矩阵对称+事件完整）"
+
+
 # ---------------------------------------------------------------- 主流程
 
 CHECKS = [
@@ -287,23 +528,43 @@ CHECKS = [
     ("标题格式", check_title_format, 0),
     ("场景标记", check_scene_markers, 0),
     ("跨时段过渡", check_time_transition, 0),
+    ("参考图绑定", check_reference_binding, 0),
+    ("伏笔表健康", check_foreshadow_table, 0),
+    ("故事圣经健康", check_story_bible, 0),
+    ("角色关系图健康", check_character_graph, 0),
 ]
 
 
-def run_checks(path: Path, villain: str | None) -> tuple[list, list, list]:
+def run_checks(path: Path, villain: str | None, foreshadow_path: str | None = None,
+               bible_path: str | None = None, graph_path: str | None = None) -> tuple[list, list, list]:
     text = read_text(path)
     title = extract_title(text)
     body = body_after_title(text, title)
     frags = parse_fragments(text)
 
+    def _read_if(p: str | None) -> str:
+        if p:
+            fp = Path(p)
+            if fp.exists():
+                return read_text(fp)
+        return ""
+
+    foreshadow_text = _read_if(foreshadow_path)
+    bible_text = _read_if(bible_path)
+    graph_text = _read_if(graph_path)
+
     passed, warned, failed = [], [], []
     dispatch = {
         "开篇有画面": lambda: check_open_visual(body, title),
         "标题不欺诈": lambda: check_title_honesty(text, title, body),
-        "风格锚点完整": lambda: check_style_anchor(frags),
+        "风格锚点完整": lambda: check_style_anchor(frags, text),
         "Character ID完整": lambda: check_character_id(text, frags),
         "碎片时长合格": lambda: check_fragment_duration(frags),
         "反派有台词": lambda: check_villain_line(text, villain),
+        "参考图绑定": lambda: check_reference_binding(text, frags),
+        "伏笔表健康": lambda: check_foreshadow_table(foreshadow_text),
+        "故事圣经健康": lambda: check_story_bible(bible_text),
+        "角色关系图健康": lambda: check_character_graph(graph_text),
     }
     for name, fn, _ in CHECKS:
         try:
@@ -356,6 +617,9 @@ def main():
     ap = argparse.ArgumentParser(description="ManjuForge 质量自检工具")
     ap.add_argument("file", help="第X集_完整版.md 路径")
     ap.add_argument("--villain", default=None, help="反派角色名（检查其是否有台词）")
+    ap.add_argument("--foreshadow", default=None, help="伏笔表.md 路径（Foreshadow Engine 健康检查）")
+    ap.add_argument("--bible", default=None, help="故事圣经.md 路径（Story Bible 健康检查）")
+    ap.add_argument("--graph", default=None, help="角色关系图.md 路径（Character Graph 健康检查）")
     ap.add_argument("--json", action="store_true", help="输出 JSON")
     args = ap.parse_args()
 
@@ -364,7 +628,7 @@ def main():
         print(f"错误：文件不存在 {path}", file=sys.stderr)
         return 2
 
-    passed, warned, failed = run_checks(path, args.villain)
+    passed, warned, failed = run_checks(path, args.villain, args.foreshadow, args.bible, args.graph)
     return render(passed, warned, failed, path, args.json)
 
 

@@ -28,9 +28,8 @@
 
 ### AI提示词风格锚点调整
 ```
-Chinese romance drama, soft warm lighting, pastel color palette,
-semi-realistic anime style, dreamy bokeh background,
-gentle expressions, blush details, consistent character design
+Semi-realistic anime style, soft warm lighting, pastel color palette,
+dreamy bokeh background, consistent character design
 ```
 
 ---
@@ -59,9 +58,8 @@ gentle expressions, blush details, consistent character design
 
 ### AI提示词风格锚点调整
 ```
-Chinese melodrama, cold blue-grey tones, dramatic shadows,
-semi-realistic anime style, melancholic atmosphere,
-tear details, lonely composition, consistent character design
+Semi-realistic anime style, cold blue-grey tones, dramatic shadows,
+lonely composition, consistent character design
 ```
 
 ---
@@ -90,8 +88,7 @@ tear details, lonely composition, consistent character design
 
 ### AI提示词风格锚点调整
 ```
-Chinese mystery thriller, high contrast lighting, dark shadows,
-semi-realistic anime style, suspenseful atmosphere,
+Semi-realistic anime style, high contrast lighting, dark shadows,
 Dutch angles, shallow depth of field, noir color palette,
 consistent character design
 ```
@@ -122,10 +119,8 @@ consistent character design
 
 ### AI提示词风格锚点调整
 ```
-Chinese school campus drama, bright natural lighting, soft pastel colors,
-semi-realistic anime style, youthful innocent atmosphere,
-school uniform details, cherry blossom or sunlight elements,
-consistent character design
+Semi-realistic anime style, bright natural lighting, soft pastel colors,
+youthful innocent atmosphere, consistent character design
 ```
 
 ---
@@ -154,9 +149,8 @@ consistent character design
 
 ### AI提示词风格锚点调整
 ```
-Chinese historical drama, warm golden lighting, rich color palette,
-semi-realistic anime style, traditional Chinese architecture,
-detailed hanfu fabric textures, candlelight atmosphere,
+Semi-realistic anime style, warm golden lighting, rich color palette,
+candlelight atmosphere, detailed fabric textures,
 consistent character design
 ```
 
@@ -186,9 +180,8 @@ consistent character design
 
 ### AI提示词风格锚点调整
 ```
-Chinese fantasy action, dynamic dramatic lighting, vibrant energy colors,
-semi-realistic anime style, power aura effects, particle effects,
-intense battle composition, speed lines, impact frames,
+Semi-realistic anime style, dynamic dramatic lighting, vibrant energy colors,
+particle effects, intense battle composition,
 consistent character design
 ```
 

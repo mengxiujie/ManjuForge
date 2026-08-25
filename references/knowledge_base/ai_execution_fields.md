@@ -96,26 +96,113 @@ P2 无需AI生成·纯黑画面
 | 竖屏标注 | 必须注明9:16 | `9:16 vertical format` | 无标注 |
 | 分辨率 | 必须注明≥1080P | `1080P minimum` | 无标注 |
 | 色值标注 | 关键色彩用HEX | `crimson red #c41e3a` | `red` |
-| 风格锚定 | 首行必须锁定风格 | `Chinese ancient mythology style` | 无风格词 |
+| 风格锚定 | 首行必须锁定风格；只描述渲染介质+视觉完成度，严禁题材/时代/地点/服装内容词（见4.4）。**光照词是否入锚点看剧集情绪基调是否统一（见4.4.1）** | `Semi-realistic anime style, high visual fidelity, consistent character design` | 无风格词 |
 | 情绪词 | 必须有1个情绪词 | `melancholic` | 无情绪词 |
 | 禁止词 | 标注不想要的元素 | `NO text, NO watermark` | 无禁止词 |
 | 资产绑定 | 绑定已有资产时标注 | `（绑定三视图）` | 无标注 |
 
-### 4.3 AI提示词英文模板（附录A资产专用）
+### 4.3 AI提示词英文模板（Direct it 范式，v1.6 吸收 Seedance 2.0 Skill OS）
+
+> 来源：Emily2040/seedance-2.0（MIT，6244★）"Direct the scene, don't decorate it"原则。2026-08-07 调研吸收。
+
+**语序原则**：主体+一个可见动作开篇（模型先锁定"这段是谁在干什么"）→ camera/light/sound 跟随 → 技术规格。
+**情绪承载原则**：情绪用"一个可见动作"承载（"the realization lands in the stilled hands, not a word"），形容词降级为辅助——不写"emotional, beautiful"，写"她的手指停在纸页上，慢慢垂下去"。
 
 ```
-[Style anchor], [Shot type] of [Subject], [Key visual details],
-[Color/mood], [Composition], [Technical specs],
+[Style anchor], [Subject] + [one visible action beat],
+[Camera: shot type + movement], [Light: source + quality], [Sound],
+[Color/mood via action — adjectives demoted], [Technical specs],
 9:16 vertical format, [Resolution], [Exclusions]
 ```
 
-示例：
+对比示例：
+- **装饰式（✗）**：`epic cinematic shot of a woman reading a letter, emotional, beautiful lighting` —— 情绪靠形容词，模型只会给一张"好看的"泛化图
+- **导演式（✓）**：`A woman reads the letter twice, then her hands lower it and go still. Camera: medium close-up at eye level, a slow push-in that settles when her hands stop. Soft window light keeps her face plain. Sound: room tone, one chair scrape, near-silence — the realization lands in the stilled hands, not a word.` —— 情绪靠动作，每个镜头参数服务一个意图
+
+示例（古风漫剧·可见动作承载情绪）：
 ```
-Chinese ancient mythology style, extreme close-up of a young girl's eye,
-iris deep navy blue #1a3a6e, pupil rapidly dilating from 30% to 90%,
-tears at corner, cinematic macro shot, dark background,
+Semi-realistic anime style, the boy shields the child from flying sparks, pulling the child's face into his chest,
+Camera: close-up at eye level, slow push-in, warm firelight from the left,
+Sound: muffled crowd, one soft heartbeat — his care shows in the hands, not a word,
 9:16 vertical format, 1080P minimum, NO text, NO watermark
 ```
+
+极端特写（情绪锚定型镜头）同样适用：可见动作=瞳孔变化。
+```
+Semi-realistic anime style, extreme close-up of a young girl's eye,
+pupil rapidly dilating from 30% to 90%, tears at corner,
+iris deep navy blue #1a3a6e, cinematic macro shot, dark background,
+9:16 vertical format, 1080P minimum, NO text, NO watermark
+```
+
+### 4.4 风格锚点防污染规范（Style Anchor 必须 medium/grade-only）
+
+> 来源：DramaClaw（开源AIGC视频引擎，58集生产验证）STYLE_DESIGN.md 设计原则。2026-08-07 调研吸收。
+
+**锚点唯一职责**：锁定全片统一的"渲染介质 + 视觉完成度"（画风/光照基调/色调/完成度）。全片每一碎片的提示词都重复注入锚点，因此**锚点里出现任何内容词=每一帧都在悄悄覆盖合法内容**（如古风剧闪回现代、角色穿西装）——这就是 covert content injection。
+
+**锚点严禁出现的词**：
+
+| 类别 | 禁词示例 |
+|------|----------|
+| 题材词 | romance / melodrama / thriller / fantasy / mythology / drama |
+| 时代词 | historical / ancient / period / dynasty / 民国 / 古装 |
+| 地点词 | campus / palace / 校园 / 宫廷 |
+| 服装道具词 | hanfu / school uniform / 校服 / 汉服 |
+| 情绪词 | melancholic / suspenseful / lonely（情绪逐镜变化，放 Color/mood 字段，不进锚点） |
+| 内容禁令 | NO modern elements（会压制闪回/穿越等合法内容） |
+
+**正确锚点结构**：
+```
+[渲染介质], [光照/色调基调], [完成度细节], consistent character design
+```
+示例：`Semi-realistic anime style, warm cinematic lighting, rich color palette, consistent character design`
+
+**内容细节（时代/地点/服装/道具/场景）一律来自画面描述和场景字段**，不进锚点。锚点必须全片逐字相同——这才是"锚点"的意义。
+
+### 4.4.1 锚点粒度决策：介质锚 vs 情绪锚（v1.5 实战新增）
+
+> 来源：《渊烬》漫剧实战第一单元（E1-5，2026-08-07）——本剧情绪基调跨集差异大（尸山→村庄→疫病城），固定 lighting 锚点会污染每个场景的情绪基调。
+
+| 剧集类型 | 锚点策略 | 示例 | 说明 |
+|----------|----------|------|------|
+| 情绪基调统一的剧 | 可含光照/色调词（情绪锚） | `Semi-realistic anime style, warm cinematic lighting, consistent character design` | 全片统一氛围（如甜宠全片暖色），demo《代码赘婿》适用 |
+| **跨集情绪差异大的剧** | **只锁介质+完成度（介质锚）** | `Semi-realistic anime style, high visual fidelity, cinematic composition, consistent character design` | 光照/色调作为每碎片场景变量写在画面描述里；否则"warm lighting"会强制尸山/疫病城也变暖——covert content injection 的另一形态 |
+
+**决策规则**：立项时定一次锚点（E1 起全片逐字相同）。判断标准=大纲情绪曲线是否单色调：单色调→情绪锚；多色调→介质锚。
+
+### 4.5 参考图槽位绑定（角色一致性升级路径）
+
+> 来源：DramaClaw 身份锁定机制（58集生产验证：有参考图才输出身份锁定块，无参考图返回空——参考图是主角，不是可选项）。2026-08-07 调研吸收。
+
+**核心认知**：纯文字 Character ID 的一致性天花板低——模型每次生成角色外观都会漂移。**参考图是工业级解法**。用户已有角色设定图（AI生成或手绘）时，用槽位绑定把参考图接入提示词。
+
+**槽位声明**（分镜表上方，与风格锚点并列）：
+
+```
+> 角色参考图：Image 1=沈舟（正脸设定图），Image 2=林霜（正脸设定图）
+```
+
+**提示词内引用**：
+
+```
+[风格锚点] ECU shot of young man, face from Image 1, blood on lip, ...
+```
+
+**三种绑定模式**：
+
+| 模式 | 语义 | 适用 |
+|------|------|------|
+| `composite` | 脸+体型+服装全从参考图 | 服装也锁定的角色 |
+| `portrait` | 脸从参考图，服装从文字描述 | 服装随剧情变化的角色 |
+| `prompt_only` | 无参考图，纯文字（默认，最弱） | 暂无设定图的角色 |
+
+**规则**：
+- 优先级：有参考图 > 纯文字。有图时必须声明槽位并引用
+- 参考图模式下 **Character ID 仍保留**——文字锚+视觉锚双保险
+- 参考图只锁"身份"（骨相/五官/体型），不锁"情绪/状态"——情绪逐镜由画面描述表达
+- 无参考图时不强制（`prompt_only` 是合法状态），quality_check 仅作 🟡 提醒
+- 同一角色跨集必须绑定**同一张**参考图（换图=换人）
 
 ---
 
