@@ -181,19 +181,30 @@ def check_character_id(text: str, frags: list[dict]) -> tuple[str, str]:
     return "🟢", f"检测到 {len(ids)} 个 Character ID：{sorted(ids)}"
 
 
-def check_fragment_duration(frags: list[dict]) -> tuple[str, str]:
-    """5. 碎片时长合格：平均3-7秒，无单一碎片>10秒（>12秒=🔴）。"""
+_FMT_PARAMS = {
+    # 抖音竖屏短剧（默认）：平均3-7秒，>10秒🟡，>12秒🔴
+    "vertical": {"avg_min": 3, "avg_max": 7, "warn": 10, "fail": 12, "label": "抖音快切节奏"},
+    # 横屏AI番剧（优酷天作10分钟/集）：平均10-20秒，>30秒🟡，>45秒🔴
+    "landscape": {"avg_min": 10, "avg_max": 20, "warn": 30, "fail": 45, "label": "横屏番剧节奏"},
+}
+
+
+def check_fragment_duration(frags: list[dict], fmt: str = "vertical") -> tuple[str, str]:
+    """5. 碎片时长合格。vertical：平均3-7秒，>10秒🟡，>12秒🔴；landscape：平均10-20秒，>30秒🟡，>45秒🔴。"""
     if not frags:
         return "🟡", "未解析到碎片表，跳过时长检查"
+    p = _FMT_PARAMS.get(fmt, _FMT_PARAMS["vertical"])
     durations = [f["duration"] for f in frags]
     avg = sum(durations) / len(durations)
-    over12 = [f["id"] for f in frags if f["duration"] > 12]
-    over10 = [f["id"] for f in frags if f["duration"] > 10]
-    if over12 or avg > 8:
-        return "🔴", f"碎片时长不合格：平均{avg:.1f}秒，超12秒碎片：{over12 or '无'}（抖音快切节奏，须拆分）"
-    if avg > 7 or over10:
-        return "🟡", f"碎片偏长：平均{avg:.1f}秒，超10秒碎片：{over10}（目标平均3-7秒，建议拆分）"
-    return "🟢", f"碎片时长合格：平均{avg:.1f}秒（{len(frags)}个碎片）"
+    over_fail = [f["id"] for f in frags if f["duration"] > p["fail"]]
+    over_warn = [f["id"] for f in frags if f["duration"] > p["warn"]]
+    if over_fail or avg > p["avg_max"] * 1.15:
+        return "🔴", f"碎片时长不合格：平均{avg:.1f}秒，超{p['fail']}秒碎片：{over_fail or '无'}（{p['label']}，须拆分）"
+    if avg > p["avg_max"] or over_warn:
+        return "🟡", f"碎片偏长：平均{avg:.1f}秒，超{p['warn']}秒碎片：{over_warn}（目标平均{p['avg_min']}-{p['avg_max']}秒，建议拆分）"
+    if avg < p["avg_min"]:
+        return "🟡", f"碎片偏短：平均{avg:.1f}秒（{p['label']}目标{p['avg_min']}-{p['avg_max']}秒，碎片过碎=节奏被快切带偏，建议合并）"
+    return "🟢", f"碎片时长合格：平均{avg:.1f}秒（{len(frags)}个碎片，{p['label']}）"
 
 
 def _script_zone(text: str) -> str:
@@ -536,7 +547,8 @@ CHECKS = [
 
 
 def run_checks(path: Path, villain: str | None, foreshadow_path: str | None = None,
-               bible_path: str | None = None, graph_path: str | None = None) -> tuple[list, list, list]:
+               bible_path: str | None = None, graph_path: str | None = None,
+               fmt: str = "vertical") -> tuple[list, list, list]:
     text = read_text(path)
     title = extract_title(text)
     body = body_after_title(text, title)
@@ -559,7 +571,7 @@ def run_checks(path: Path, villain: str | None, foreshadow_path: str | None = No
         "标题不欺诈": lambda: check_title_honesty(text, title, body),
         "风格锚点完整": lambda: check_style_anchor(frags, text),
         "Character ID完整": lambda: check_character_id(text, frags),
-        "碎片时长合格": lambda: check_fragment_duration(frags),
+        "碎片时长合格": lambda: check_fragment_duration(frags, fmt),
         "反派有台词": lambda: check_villain_line(text, villain),
         "参考图绑定": lambda: check_reference_binding(text, frags),
         "伏笔表健康": lambda: check_foreshadow_table(foreshadow_text),
@@ -620,6 +632,8 @@ def main():
     ap.add_argument("--foreshadow", default=None, help="伏笔表.md 路径（Foreshadow Engine 健康检查）")
     ap.add_argument("--bible", default=None, help="故事圣经.md 路径（Story Bible 健康检查）")
     ap.add_argument("--graph", default=None, help="角色关系图.md 路径（Character Graph 健康检查）")
+    ap.add_argument("--format", default="vertical", choices=["vertical", "landscape"],
+                    help="碎片时长标准：vertical=抖音竖屏(平均3-7秒) landscape=横屏番剧(平均10-20秒，优酷天作10分钟/集)")
     ap.add_argument("--json", action="store_true", help="输出 JSON")
     args = ap.parse_args()
 
@@ -628,7 +642,7 @@ def main():
         print(f"错误：文件不存在 {path}", file=sys.stderr)
         return 2
 
-    passed, warned, failed = run_checks(path, args.villain, args.foreshadow, args.bible, args.graph)
+    passed, warned, failed = run_checks(path, args.villain, args.foreshadow, args.bible, args.graph, args.format)
     return render(passed, warned, failed, path, args.json)
 
 

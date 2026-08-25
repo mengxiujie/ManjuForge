@@ -92,3 +92,41 @@
 - v1.7.0：主线B字段 + 自检规则（本次 commit：`sync to v1.7.0`）
 - 主副本 git 历史已收尾：v1.6.0 同步 commit（9f070d3）后工作区干净
 - 同步铁律：安装副本（~/.hermes/skills/creative/manjuforge/）↔ 主副本（D:\社区志\未叙文化\ManjuForge）双向对齐后再 commit
+
+---
+
+# ManjuForge v1.7.1 优化记录（2026-08-25）—— 三方合并
+
+> 上一节判断"横屏适配待用户确认后执行"——核查后发现**横屏适配已在《山海》05_生产Skill 工作台独立完成**（8/24），只是没并回主版本。本轮把三方（主副本/安装副本/05生产版）统一到 v1.7.1。
+
+## 一、发现：05_生产Skill 是《山海》生产工作台
+
+- 位置：`D:\社区志\未叙文化\山海 剧集筹备\05_生产Skill\`，5个 skill：manjuforge（核心+横屏定制）、ai-sample-pipeline（样片流水线）、anime-storyboard-artist（分镜）、character-asset-manager（角色资产）、data-feedback-loop（数据回流）
+- manjuforge 生产版含 3 个主版本没有的文件：
+  - `platform_adaptation.md`（94行）— 三平台参数化（vertical/landscape/红果），landscape 档：16:9、单集≥10min、碎片10-20秒、评审制、节目名+Slogan 标题、主题动机声音系统、`quality_check --format landscape`
+  - `shanhai_landscape_epic_mode.md`（199行）— 《山海》专项模式：回应权北极星、禁互动引导、禁抖音式标题党、EP+集名标题；**2026-08-25 运行时覆盖：14集/目标152:00平台版，9.5分钟下限停止使用**
+  - `tianzuo_2026_runtime_patch.md`（64行）— 优酷天作官方门槛（横屏/单集≥10min/≥10集/总≥150min/样片≥5min/投稿邮箱 ykdmnrhz@list.alibaba-inc.com）+ 解释纪律（下限非固定值；10集→均集≥15min，14集→均集≥10分43秒）+ 山海锁定参数
+- `skill横屏补丁.txt`（198行）= shanhai_landscape_epic_mode.md 的说明稿/草稿
+
+## 二、三方版本分裂（合并前）
+
+| 副本 | 版本 | 横屏适配 | 主线B(v1.7.0) | demo | README/LICENSE |
+|------|------|:---:|:---:|:---:|------|
+| 05_生产Skill/manjuforge | 1.6.0 | ✅ | ❌ | ❌ 缺 | 旧 |
+| 安装副本（Hermes加载） | 1.7.0 | ❌ | ✅ | ✅ | ✅ 修正 |
+| 主副本（Git） | 1.7.0 | ❌ | ✅ | ✅ | ✅ 修正 |
+
+## 三、合并动作（本次）
+
+1. 05 → 主副本：3个 references + quality_check.py（--format landscape）
+2. 主副本 SKILL.md 横屏4处：碎片时长 landscape 双标准（顺带修复 v1.2 遗留的"10-15秒 vs 3-7秒"矛盾）/ quality_check 引用 / platform_adaptation 登记 / knowledge_base 计数（16案例含横屏史诗）
+3. skill.json 1.6.0 → 1.7.1；CHANGELOG 加 v1.7.1
+4. 主副本 → 安装副本、05：rsync --delete 全量对齐（demo/storyboard-skill/README修正/LICENSE完整版/主线B 全部三方一致）
+5. 三方 diff 验证零差异（仅保留非产品文件：docs/、style-templates/、hg_tree.json）
+6. git commit
+
+## 四、遗留观察（不阻塞）
+
+- SKILL.md 内部"13个拉片案例"（description/卖点/关系节）与"16个拉片案例"（知识库清单）口径不一致——05 生产版即如此，本轮忠实保留；后续可统一为"13案例文件+3横屏史诗参考"
+- knowledge_base/case_study 实际仍为13个文件，深海/灵笼/大鱼海棠以参考形式存在于 ai_execution_fields.md/ep01_full_example.md——"16个"是含参考的口径
+- 05 工作台其余4个 skill（ai-sample-pipeline 等）与 manjuforge 无版本耦合，未纳入本次合并

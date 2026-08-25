@@ -419,7 +419,7 @@ description: 漫剧铸造 - AI漫剧连载创作引擎。输入题材/人设，�
 
 关键规则：
 - 前3秒必须有视觉钩子（大特写或强对比画面）
-- 碎片时长10-15秒，总时长≤5分钟
+- 碎片时长平均3-7秒（抖音快切标准，实测验证），总时长≤5分钟；**横屏番剧（如优酷天作10分钟/集）用 landscape 标准（平均10-20秒/碎片），见 `references/platform_adaptation.md`**
 - 声音四层标注：🎵音乐层 + 🔊环境层 + 💓生理层 + 🫧细节层
 - **每碎片必须有统一的风格锚点（Style Anchor）前缀**，确保跨镜头画风一致。**锚点只描述渲染介质+视觉完成度（如 `Semi-realistic anime style, warm cinematic lighting, consistent character design`），严禁题材/时代/地点/服装/情绪内容词**（historical/ancient/romance/hanfu/古装/民国/校园等）——锚点注入每个碎片，带内容词=每帧悄悄覆盖合法内容（闪回现代被压制、穿西装被改回古装）。内容细节一律由画面描述提供。完整规范见 `references/knowledge_base/ai_execution_fields.md` 4.4
 - **每个角色必须有Character ID锚定**（如`Character ID: SHENZHOU`），跨集复用
@@ -445,7 +445,7 @@ description: 漫剧铸造 - AI漫剧连载创作引擎。输入题材/人设，�
 
 每集创作完成后**自动运行**，不等用户要求。任何🔴项未通过 → 标记"未通过"并阻止进入下一集。修复后重新运行，直到全部🔴消除。
 
-> 可直接运行 `scripts/quality_check.py <集文件路径>` 自动检查（黑屏开头/风格锚点/Character ID/碎片时长/标题兑现/声音时间匹配等15项）。
+> 可直接运行 `scripts/quality_check.py <集文件路径> [--format landscape]` 自动检查（黑屏开头/风格锚点/Character ID/碎片时长/标题兑现/声音时间匹配等18项，--format landscape 用横屏碎片标准）。
 > 详细六维度打分体系见 `references/evaluation_framework.md`。
 
 ### 人设一致性
@@ -597,8 +597,9 @@ description: 漫剧铸造 - AI漫剧连载创作引擎。输入题材/人设，�
 | `references/camera_movement_guide.md` | 镜头运动指南 |
 | `references/emotion_color_guide.md` | 情绪色调对照表 |
 | `references/douyin_platform_rules.md` | 抖音平台规则 |
+| `references/platform_adaptation.md` | **平台适配层（2026-08-24新增）**：抖音竖屏/优酷横屏番剧/红果三档参数化——《山海》C线走优酷横屏番剧（landscape），创作前先锁定 platform 参数 |
 | `references/demo_case_study.md` | Demo案例分析 |
-| `references/knowledge_base/` | 13个拉片案例+竖屏规范+声音设计+AI执行字段 |
+| `references/knowledge_base/` | 16个拉片案例（新增深海/灵笼/大鱼海棠横屏史诗）+竖屏规范+横屏AI执行版+声音设计+AI执行字段 |
 | `references/optimization-log-v1.2.md` | v1.2.0优化日志（结构重构方法+自检脚本验证模式+git合并经验，下次优化先读） |
 | `references/competitive_shanyin_survey.md` | 竞品调研存档：山音编剧导演大师2.0（SekoAI，结论：不开源，参考价值有限） |
 | `references/competitive_dramaclaw_survey.md` | 竞品调研存档：DramaClaw（开源AIGC视频引擎，3.3k stars，Elastic 2.0）。含5个可吸收改进点：风格锚点防内容污染/参考图槽位/场景光照字段/角色识别锚点/I2V规则。**风格锚点规范需按此修正** |

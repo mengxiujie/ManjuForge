@@ -5,6 +5,18 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1] - 2026-08-25
+
+### Added
+
+- **横屏剧情型短剧适配正式并入产品**（此前在《山海》05_生产Skill 工作台独立存在，本轮三方合并）：
+  - `references/platform_adaptation.md` — 平台适配层：抖音竖屏/优酷横屏番剧/红果三档参数化（画幅/单集时长/碎片时长/分发逻辑/标题/结尾/开篇钩子/声音设计/质量校验），创作前先锁定 `platform` 参数
+  - `references/shanhai_landscape_epic_mode.md` — 《山海》横屏神话史诗专项模式（模式标识 `shanhai_landscape_epic`）：回应权主题北极星、禁互动引导、EP+集名标题、单集≥10分钟/全季≥150分钟
+  - `references/tianzuo_2026_runtime_patch.md` — 优酷动漫"天作"计划2026运行时补丁：官方最低门槛（横屏/单集≥10min/≥10集/总≥150min/样片≥5min/投稿邮箱）、解释纪律（下限非固定值）、《山海》14集/152:00平台版锁定参数
+  - `scripts/quality_check.py` — 新增 `--format landscape` 参数：碎片时长横屏标准（平均10-20秒，>30秒🟡，>45秒🔴）
+  - `SKILL.md` — 竖屏碎片时长规范修正（10-15秒→平均3-7秒抖音标准+landscape 双标准，修复 v1.2 遗留矛盾）；质量自检引用加 `--format landscape`；知识库清单登记 platform_adaptation 与横屏史诗拉片案例
+- **三方副本合并**：主副本（Git）/ 安装副本（Hermes 加载）/ 05_生产Skill 统一到 v1.7.1，demo 13文件、storyboard-skill.md、README 修正、LICENSE MIT-0 完整版三方对齐
+
 ## [1.7.0] - 2026-08-25
 
 ### Added
