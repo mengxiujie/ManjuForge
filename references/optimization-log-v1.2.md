@@ -198,3 +198,21 @@
 - 改动后 skill.json 版本号+1，CHANGELOG 记一条，再同步快照↔运行态
 - 语义化版本：fix=patch(+0.0.1)、新能力=minor(+0.1.0)、破坏性重构=major(+1.0.0)
 - 与 manjuforge 的差异：这 4 个 skill 无 git 仓库（纯本地生产工具），版本管理以 CHANGELOG 为记录载体；若未来开源再并入 git
+
+---
+
+# v1.7.4 维护发布（2026-08-29 追加）
+
+> 例行维护：四方残留文件清理 + 计数校准。
+
+## 做了什么
+
+- 三副本（安装 ~/.hermes/skills/creative/manjuforge、运行态 ~/.workbuddy/skills/manjuforge、生产快照 05_生产Skill/manjuforge）残留的 2 个 dedupe 遗留文件清除：`pitfalls_log.md`（早期 13 条踩坑，SKILL.md「实测踩坑记录」已覆盖 24 条）、`storyboard-skill.md`（anime-storyboard-artist 完整复制，知识库已内化至 knowledge_base/ 且未被 SKILL.md 引用）
+- README references 计数 30→28（保留「以目录实际为准」防漂移表述）
+- prompt.core 版本头 v1.7.3→v1.7.4（发布检查清单执行）
+
+## 教训沉淀（重要）
+
+- **同步只增不删是残留根因**：v1.2.0 dedupe（90ea52c）已从主副本删除这 2 个文件，但 tar 管道同步只做增量复制（无 --delete 语义），副本残留 2 个多月（6 月→8 月）
+- 治本：四方 diff 验证时，`Only in <副本>` 的副本独有文件必须人工审查是否为 dedupe 残留——不能只盯「内容差异」，副本独有文件与主副本独有 docs/ 一样需要解释
+- 发布检查清单补一条：主副本出现 dedupe/删除类 commit 后，检查各副本是否同步删除

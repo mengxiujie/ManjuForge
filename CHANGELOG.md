@@ -5,6 +5,13 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.4] - 2026-08-29
+
+### Fixed
+
+- **四方副本残留文件清理**（例行维护）：安装副本 / 运行态 / 生产快照三处残留 v1.2.0 dedupe 时已从主副本删除的遗留文件——`references/pitfalls_log.md`（早期 13 条踩坑，已被 SKILL.md「实测踩坑记录」24 条表完全覆盖）、`references/storyboard-skill.md`（anime-storyboard-artist 完整复制，知识库已内化至 knowledge_base/ 且未被 SKILL.md 引用）。三方已清除，四方重新对齐
+- **README references 计数校准**：30→28（保留「以目录实际为准」防漂移表述）
+
 ## [1.7.3] - 2026-08-25
 
 ### Fixed
