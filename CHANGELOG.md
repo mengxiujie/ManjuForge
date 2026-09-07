@@ -5,6 +5,25 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-09-07
+
+### Added
+
+- **Agent Skills 标准兼容层**（市场调研驱动：2026 技能分发已进入开放标准时代，agentskills.io 规范 + Claude Code/Codex/Copilot 全支持）：SKILL.md frontmatter 补 `license: MIT-0` + `metadata`（version/author），与 agentskills.io 规范字段对齐；确认 Hermes 解析兼容（name 与目录名 manjuforge 匹配）
+- **README 多平台分发改造**：从"Hermes Skill"单一平台定位升级为"Agent Skill（Hermes / Claude Code / Codex / Copilot 通用）"；新增四平台一键安装指引 + GitCode 国内镜像；补"画面一致 vs 叙事记忆"市场定位对照表；badges 更新（v1.8.0 / Agent Skill / Agent Skills 标准）
+- **README_EN.md 英文版**：面向海外短剧/动漫创作者的分发入口（此前纯中文，海外不可达）
+- **生产执行纪律 + Adapter Contract**（借鉴 zenstory-ai/drama-skills 1632★ 真实产线实践）：SKILL.md 新增「生产执行纪律（供应商解耦 + 确认前置）」小节 + `references/adapter-contract.md` 完整契约——创作文件永不写死供应商、执行经 adapter profile 映射、四步确认闸门（建边界 job → prepare 预览 → 明确确认 → run，失败重试须重新确认，防失控成本）
+
+### Fixed
+
+- skill.json author 笔误 `mengxiuj` → `mengxiujie`；version 同步 1.8.0
+
+### Notes
+
+- 分支 `feat/skill-standard` 基于远端 v1.7.4（b7520e1）开发；本地桌面 main 旧 v1.3-v1.6 提交已备份至 `backup-local-v16`
+- README references 计数改为 29（以目录实际为准防漂移）
+- 市场调研结论存档：竞品量化（waoowaoo 14k★/inkos 9.6k★/Jellyfish 6.3k★/seedance-2.0 7.2k★/zenstory drama-skills 1.6k★ 等）——ManjuForge 差异化确认在"叙事记忆"（竞品全在做画面资产一致）
+
 ## [1.7.4] - 2026-08-29
 
 ### Fixed

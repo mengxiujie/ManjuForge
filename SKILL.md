@@ -1,6 +1,10 @@
 ---
 name: manjuforge
 description: 漫剧铸造 - AI漫剧连载创作引擎。输入题材/人设，输出完整商用漫剧剧本+分镜+配音文案+AI提示词。支持跨集连载记忆（七文件：角色档案+世界观+场景布局+剧情摘要+伏笔表+故事圣经+角色关系图），解决长篇连载人设崩坏、伏笔丢失、设定漂移、关系混乱四大问题。内置Story Bible、Character Graph、Foreshadow Engine三大引擎、Hook公式库（6型开篇+4型结尾截断）、心理触发点体系、13个拉片案例、6大风格模板、竖屏9:16 AI执行版分镜、18项自动质量自检脚本（含介质锚点规范+Direct it提示词范式）。经《渊烬》实战第一单元从零跑通验证。当用户要创作漫剧、短剧剧本、连载分镜、或从网文改编漫剧时使用。
+license: MIT-0
+metadata:
+  version: "1.8.0"
+  author: mengxiujie
 ---
 
 # ManjuForge 漫剧铸造 - AI漫剧连载创作引擎
@@ -586,6 +590,18 @@ description: 漫剧铸造 - AI漫剧连载创作引擎。输入题材/人设，�
 - 质量自检（quality_check.py）与模型无关，任何档位产出都跑
 - 成本策略：批量碎片生成用弱模型+固定模板；情绪/反转关键碎片用强模型单独生成
 
+### 生产执行纪律（供应商解耦 + 确认前置）★v1.8.0
+
+本 Skill 的产出（剧本/分镜/AI 提示词）是**供应商无关的创作规格**——任何图片/视频提示词不绑定具体生成后端。把提示词送去实际生成（跑图/跑视频）时，必须经 **adapter 层**执行，并遵守四步确认闸门：
+
+1. **建边界 job**：一次只跑一个明确任务——一种模态、明确数量、完整提示词、参考文件、参数、输出路径、adapter profile
+2. **prepare 预览**：执行前先展示完整预览（数量/提示词/参考绑定/参数/费用特征），此阶段不调用任何生成 API
+3. **明确确认**：创作者看到预览后明确同意**当前这一项**任务才算确认；"继续""都做完""预算没问题"、之前确认过别的版本，都不算本次生产确认
+4. **run**：启动 adapter 前消费一次确认；成功或失败后再次执行都必须**重新确认**——防止失败重试意外产生第二笔费用
+
+- adapter profile = 供应商参数档（Seedance/即梦/Kling/MiniMax H3/GPT Image 2/本地 ComfyUI 各一档，记录接口形态、参考图 role 取值、费用特征），创作文件永不写死供应商，执行时经 profile 映射
+- 完整契约见 `references/adapter-contract.md`（含参考图 role 对照、job 边界定义、fail-closed 规则）
+
 ---
 
 ## 六、知识库参考
@@ -616,6 +632,7 @@ description: 漫剧铸造 - AI漫剧连载创作引擎。输入题材/人设，�
 | `references/demo_case_study.md` | Demo案例分析 |
 | `references/knowledge_base/` | 16个拉片案例（新增深海/灵笼/大鱼海棠横屏史诗）+竖屏规范+横屏AI执行版+声音设计+AI执行字段 |
 | `references/optimization-log-v1.2.md` | v1.2.0优化日志（结构重构方法+自检脚本验证模式+git合并经验，下次优化先读） |
+| `references/adapter-contract.md` | **v1.8.0 供应商解耦+确认前置执行契约**：adapter profile 映射（Seedance/即梦/Kling/MiniMax H3/GPT Image 2/ComfyUI）、四步确认闸门（建 job→预览→明确确认→run）、参考图 REF-/PLAN- 绑定规范 |
 | `references/competitive_shanyin_survey.md` | 竞品调研存档：山音编剧导演大师2.0（SekoAI，结论：不开源，参考价值有限） |
 | `references/competitive_dramaclaw_survey.md` | 竞品调研存档：DramaClaw（开源AIGC视频引擎，3.3k stars，Elastic 2.0）。含5个可吸收改进点：风格锚点防内容污染/参考图槽位/场景光照字段/角色识别锚点/I2V规则。**风格锚点规范需按此修正** |
 | `references/competitive_hellgrind_survey.md` | 竞品调研存档：Hell-Grind-AIGC-Skill（Higgsfield 90分钟AI电影剥离版，MIT）。10阶段项目模板工程化。3个可吸收点：**角色档案"身份不变量/状态变量"二分（🔴为Character Graph铺路）**/Story Bible"禁止变化"段/参考图8维继承。**角色档案模板需按此升级** |
