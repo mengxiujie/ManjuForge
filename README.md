@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-v1.8.0-brightgreen" alt="Version">
+  <img src="https://img.shields.io/badge/Version-v1.10.0-brightgreen" alt="Version">
   <img src="https://img.shields.io/badge/License-MIT--0-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Agent%20Skill-blue" alt="Platform">
   <img src="https://img.shields.io/badge/Standards-Agent%20Skills-8A2BE2" alt="Agent Skills">
@@ -89,7 +89,7 @@ ManjuForge 是一个 AI 漫剧**连载**创作工具，以标准 **Agent Skill**
 - Direct it 提示词范式（情绪靠可见动作承载，不堆形容词）
 
 ### 专业知识库
-29 个专业参考文件 + 13 个拉片案例 + 6 大风格模板 + Hook 公式库（6型开篇+4型截断）+ 心理触发点体系：
+30 个专业参考文件 + 13 个拉片案例 + 6 大风格模板 + Hook 公式库（6型开篇+4型截断）+ 心理触发点体系：
 - 拉片案例：盗梦空间/黑客帝国/千与千寻/你的名字/鬼灭之刃/进击的巨人/万神殿/中国奇谭/哪吒2/镖人/雾山五行/深海/灵笼/大鱼海棠
 - 竖屏运镜字典、声音设计分层、AI 执行字段、平台适配（抖音竖屏/优酷横屏/红果）
 
@@ -98,6 +98,20 @@ ManjuForge 是一个 AI 漫剧**连载**创作工具，以标准 **Agent Skill**
 python scripts/quality_check.py demo/第1集_完整版.md --villain 赵天赐 --foreshadow demo/伏笔表.md --bible demo/故事圣经.md --graph demo/角色关系图.md
 ```
 18 项检查（开篇画面/标题欺诈/风格锚点/Character ID/碎片时长/声音匹配/视觉锤/反派台词/互动引导/字幕卡/负向提示词/跨时段过渡/参考图绑定/伏笔表健康/故事圣经健康/角色关系图健康等），🔴 项自动拦截进入下一集，已在 11 集实战（6 Demo + 5 渊烬）验证。
+
+### 跨文件一致性检查（v1.9.0 新增）
+```bash
+python scripts/consistency_check.py demo/
+```
+上面那个查**单文件内部**字段合不合规；这个查**文件与文件之间**有没有自相矛盾——记忆断裂的真实形态。**22 项**分五组（M6·F5·R4·D3·P4）：记忆文件层（七文件齐备/更新进度一致/伏笔清单双向一致/伏笔状态同步/悬空F-ID引用/角色弧光覆盖档案）、伏笔表健康（发酵期/回收状态矛盾/悬置/并发上限/ID唯一）、关系图（矩阵对称/阶段不跳级/末态一致/关系型伏笔有落点）、人物状态（快照角色有档案/出场角色必须有快照/"最后出场"必须真实）、分集层（时间轴首尾相接/风格锚点/Character ID/项目级覆盖）。**每条报错都同时给出「哪两个文件矛盾」和「怎么修」**——不做只报"校验失败"的哑巴检查器。
+
+### 检查器自测（v1.10.0 新增）
+```bash
+python scripts/selftest.py
+```
+**不调模型、不耗额度、一秒跑完**的确定性逻辑自测：纯函数断言 + 构造"每类故障各埋一处"的临时项目断言 22 项检查全部触发 + 干净项目零 🔴 防误报 + 自动校验"22 项"这个数字与文档一致。首次运行就抓出夹具自身的一处记忆矛盾。
+
+实测（6 集 Demo）当场抓出人工复核漏掉的三类事故：`场景布局.md` 缺失 / 关系图 E6 记了林老太君在行会的戏但剧情摘要人物快照里没这个人 / 七处碎片时间轴空档 2-8 秒（成片黑场）。
 
 ### 生产执行纪律（v1.8.0）
 提示词产出与生成后端**供应商解耦**：任何跑图/跑视频动作经 adapter 层执行，遵守四步确认闸门（建边界 job → prepare 预览 → 明确确认 → run，重试需重新确认，防失控成本）。详见 `references/adapter-contract.md`。
@@ -148,9 +162,12 @@ ManjuForge/                        # skill 目录（目录名=skill name）
 ├── prompt.core.txt                # 核心引擎规则（开源稳定版）
 ├── LICENSE                        # MIT-0
 ├── scripts/
-│   └── quality_check.py           # 18项自动质量自检
+│   ├── quality_check.py           # 18项单文件字段自检
+│   ├── consistency_check.py       # ★v1.9.0 22项跨文件一致性检查
+│   └── selftest.py                # ★v1.10.0 检查器自测（不调模型）
 ├── templates/                     # 6个记忆模板
-├── references/                    # 29个专业参考文件
+├── references/                    # 30个专业参考文件
+│   ├── competitive_landscape_2026-10.md  # ★v1.9.0 开源市场全景调研
 │   ├── adapter-contract.md        # ★v1.8.0 供应商解耦+确认前置契约
 │   ├── evaluation_framework.md    # 六维度评估体系
 │   ├── hook_formula_library.md    # 六型Hook公式库

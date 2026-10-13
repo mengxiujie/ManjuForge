@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+
+# 私有申请材料（v1.8.0 起不再随仓库发布，仅本地保留）
+docs/openai-oss-application.md
+docs/openai_credit_application.md

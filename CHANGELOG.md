@@ -5,6 +5,47 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-10-13
+
+### Added
+
+- **`scripts/selftest.py` 检查器自测**（借鉴 eternityspring/shuohao-skills 4.5k★ 的工程纪律：每个 skill 必须有 `selftest`，**不调模型、不耗额度**）：47 项断言——纯函数（norm_name/name_match/epnum/stage_level/pair_key/parse_tables/row_dict）+ 分镜解析 + **构造"每类故障各埋一处"的临时项目，断言 22 项检查全部触发** + 干净项目零 🔴 防误报 + 空目录/不存在路径优雅降级 + **自动扫描源码校验"22 项"与文档一致**。一秒跑完，无需 CI。
+  - 首次运行即抓出夹具自身的一处记忆矛盾（某角色在角色档案里却从未在任何分集出场 → D3/P4 正确报红），反证了"防误报"断言有效。
+- **SKILL.md 新增「发布纪律」节**：5 条缺一不可的改动后检查——版本收口五处 / selftest 全绿 / 两个检查器跑 demo 并复核 🔴 非误报 / **prompt.core 同步必须 grep 新能力关键词而不只改版本号** / 全部副本 pairwise `diff -r --strip-trailing-cr` 零差异。
+
+### Changed
+
+- **SKILL.md 无损瘦身 −59 行**（717 → 658）：定位节 37 行营销备忘录压到 8 行（详情指针到 references）；实测踩坑记录 24 行表重构为「12 条已机器化不必人工核对 + 12 条语义类必人工核对」；Hook/心理触发点两个清单合并压缩；剧情摘要模板改指针到 `templates/plot_summary.md`；推广策略压缩为指针，腾出的位置换成新增的「发布纪律」节。
+- **description 从 840 字符压到 79 字符**——这是每次加载都常驻的上下文开销。
+- **三个孤儿 reference 归位**：`shanhai_landscape_epic_mode.md`、`tianzuo_2026_runtime_patch.md`（均标注「项目专项·不进公开仓库」）、`vibefilming-evaluation.md`（补进竞品调研组）。
+- **检查项数收口**：19 / 17 / 22 三处不一致 → 统一为 **22**（M6 · F5 · R4 · D3 · P4），并在 selftest 内加断言防再次漂移。
+
+### Fixed
+
+- 1.9.0 条目曾把 22 项检查写成「19 项」——本版更正。
+- `prompt.core.txt` 从 v1.7.4 补齐到 v1.10.0（补 adapter 契约 + 跨文件检查 + 发布纪律），修复该坑的第四次复发（v1.2 修过 → v1.6 回归 → v1.7.3 再修 → 再次落后）。
+
+## [1.9.0] - 2026-10-13
+
+### Added
+
+- **跨文件一致性检查器 `scripts/consistency_check.py`**（借鉴 zenstory-ai/drama-skills 2.8k★ 的 `creator_markdown_check.py`）：**22 项检查分五组**——M 记忆文件层（七文件齐备 / 各文件"最后更新"集数一致 / 伏笔清单双向一致 / 伏笔状态同步 / 悬空 F-ID 引用 / 角色弧光覆盖档案）、F 伏笔表健康（回收发酵期≥2集 / 回收状态与字段不矛盾 / 悬置>8集 / S级≤3·A级≤5 并发 / ID 唯一）、R 关系图（矩阵对称 / 阶段不跳级 / 矩阵末态=时间线末态 / 关系型伏笔有落点）、D 人物状态（快照角色有档案 · 群像豁免 / **出场角色必须有快照** / "最后出场"必须真实）、P 分集层（**时间轴首尾相接** / 每碎片风格锚点 / 角色 Character ID / 项目级覆盖）。
+  - **补的是 quality_check.py 查不到的一类事故**：前者只看单文件内部字段合不合规，查不出文件与文件互相矛盾——而那是记忆断裂的真实形态。
+  - **报错范式**（照 drama-skills 抄）：每条问题同时给出「哪两个文件在哪一点上矛盾」+「怎么修」，不做只报"校验失败"的哑巴检查器。
+  - **实测（6 集 Demo）当场抓出人工复核漏掉的三类事故**：`场景布局.md` 缺失；关系图 E6 记了林老太君在行会的戏、剧情摘要人物快照里却没这个人（出场了不登记=下集把她当没出现过）；7 处碎片时间轴空档 2-8 秒（成片黑场）。合计 18 项：🔴8 · 🟡7 · 🟢3。
+  - 支持 `--json` 机读、`--quiet` 只显问题；空目录/不存在路径均优雅降级。
+- **`references/competitive_landscape_2026-10.md` 开源市场全景调研**：三层格局实证（全栈平台 Toonflow 17.4k / huobao 16.1k / waoowaoo 14.5k / HKUDS-ViMax 12.6k；Skill 套件 shuohao 4.4k / drama-skills 2.8k / manju-laoli 1.2k）；三个直接竞品机制深拆；能力对照评分表；18 条分级吸收点（🔴4 / 🟡10 / 🟢4）。**下次迭代先读这个。**
+
+### Changed
+
+- SKILL.md 新增「跨文件一致性检查（v1.9.0 新增·必跑）」小节，明确 Step 4 同步完成后、进入下一集前必须跑一次
+- 版本收口 1.8.0 → 1.9.0（SKILL.md frontmatter / skill.json / README 徽章 / README_EN 徽章）；references 计数 29 → 30
+
+### Notes
+
+- **战略验证**：三家头部 Skill 套件（shuohao 6 skill / drama-skills 12 skill / manju-laoli 41 模块）**全部不做长篇连载记忆**——Story Bible / Character Graph / Foreshadow Engine 仍是市场空白，护城河成立。
+- **但**"机检门禁 + 参考图生成"已是行业标配，ManjuForge 在这两个维度落后一个身位；本版补上机检，参考图生成门列为下一优先级。
+
 ## [1.8.0] - 2026-09-07
 
 ### Added
