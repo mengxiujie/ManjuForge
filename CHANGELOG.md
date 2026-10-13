@@ -5,6 +5,21 @@ All notable changes to ManjuForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.1] - 2026-10-13
+
+### Added
+
+- **README 首屏「30 秒了解 + 证据区」**：面向陌生读者（招聘方 / 评审 / 潜在用户）的前 10 秒。新增三块——「是什么/解决什么」两句话说明 + 「可以直接验证的东西」对照表（想知道 X 就打开 Y，会看到什么）+ 「规模与状态」。原文的问题是要翻三千字才知道这项目到底能干什么、有没有真东西。
+
+### Changed
+
+- 版本收口 1.10.0 → 1.10.1（SKILL.md frontmatter / skill.json / README 徽章 / README_EN 徽章）
+
+### Notes
+
+- 本轮优化动因：项目需作为**过往作品证明**用于简历与赛事材料。缺口不在能力（能力深度第 9 档），在**对外可读性**——GitHub topics 为空、项目描述是英文的 "manju script"（外人不知 manju 为何物）、无可点开的成品入口。故本轮只做门面，不做能力升级。
+- 仓库元数据同步更新（GitHub topics + description），见仓库设置。
+
 ## [1.10.0] - 2026-10-13
 
 ### Added

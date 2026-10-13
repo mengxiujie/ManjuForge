@@ -11,13 +11,38 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-v1.10.0-brightgreen" alt="Version">
+  <img src="https://img.shields.io/badge/Version-v1.10.1-brightgreen" alt="Version">
   <img src="https://img.shields.io/badge/License-MIT--0-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Agent%20Skill-blue" alt="Platform">
   <img src="https://img.shields.io/badge/Standards-Agent%20Skills-8A2BE2" alt="Agent Skills">
   <img src="https://img.shields.io/badge/Episodes--Tested-11-orange" alt="Episodes">
   <img src="https://img.shields.io/badge/Foreshadow--Rate-100%25-orange" alt="Foreshadow">
 </p>
+
+---
+
+## 30 秒了解
+
+**是什么**：一个标准 Agent Skill（SKILL.md）。装进 Claude Code / Codex / GitHub Copilot / Hermes Agent，输入题材或原著，直接产出漫剧全套可发布素材：剧本 + 分镜 + 配音文案 + AI 绘图与视频提示词。
+
+**解决什么**：AI 漫剧做单集容易，做长线连载难。到第 20-30 集人设会崩、伏笔会丢、设定会漂移、关系会乱。ManjuForge 用七个结构化记忆文件 + 三套引擎（故事圣经 / 角色关系图 / 伏笔追踪）把长线一致性管住。
+
+### 可以直接验证的东西
+
+| 想验证什么 | 打开哪里 | 会看到什么 |
+|---|---|---|
+| 能不能真跑出成品 | `demo/` | 6 集《代码赘婿》完整实战产物：剧本、分镜、配音文案、AI 提示词、七个记忆文件 |
+| 质量检查是不是真的能跑 | `scripts/quality_check.py` | 18 项单文件检查，红黄绿分级 + 退出码，可接 CI |
+| 记忆文件互相矛盾能不能查出来 | `scripts/consistency_check.py` | 22 项跨文件引用完整性检查。在 Demo 上实测抓出：场景布局文件缺失 / 关系图记录了某角色本集有戏但剧情摘要人物快照里没有他 / 7 处碎片时间轴空档 2-8 秒 |
+| 工程纪律到什么程度 | `scripts/selftest.py` | 47 项断言，不调用任何 AI 模型、不消耗额度，一秒跑完 |
+| 有没有做过市场判断 | `references/competitive_landscape_2026-10.md` | 2026-10 开源市场全景调研：三层格局、三个直接竞品机制拆解、18 条分级吸收点 |
+
+### 规模与状态
+
+- 版本 v1.10.1 · 30 个参考文件 · 13 个影视拉片案例 · 6 个记忆文件模板 · 3 个可执行脚本
+- 三平台参数化适配：抖音竖屏 / 优酷横屏番剧 / 红果竖屏
+- 2026-06 创建，当前仍在维护；11 集实战验证（6 集 Demo + 5 集真实项目）
+- 许可 MIT-0：可商用、免署名、可闭源改造
 
 ---
 

@@ -3,7 +3,7 @@ name: manjuforge
 description: 漫剧/短剧连载创作引擎：题材或原著到剧本、分镜、配音文案、AI提示词全套产出，跨集记忆防人设崩坏与伏笔丢失。创作漫剧、短剧剧本、连载分镜、网文改编漫剧时使用。
 license: MIT-0
 metadata:
-  version: "1.10.0"
+  version: "1.10.1"
   author: mengxiujie
 ---
 
